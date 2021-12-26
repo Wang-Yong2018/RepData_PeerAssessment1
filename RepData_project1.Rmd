@@ -1,0 +1,63 @@
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
+
+
+## Loading and preprocessing the data
+```{r environment, result='hide',echo=TRUE}
+env=Sys.setlocale("LC_TIME", "English")
+library(data.table)
+library(dplyr)
+library(tidyr)
+```
+
+```{r load,echo=TRUE}
+library(data.table)
+library(dplyr)
+library(tidyr)
+
+zip_name <-'activity.zip'
+
+if (!file.exists('activity.csv')){
+  unzip(zip_name)
+  }
+dt<- fread('activity.csv',na.strings='NA')
+
+```
+
+## What is mean total number of steps taken per day?
+```{r calc_mean}
+steps_daily <- dt %>% 
+  group_by(date) %>% 
+  summarise(steps=sum(steps,na.rm=TRUE))
+# histgram plot total steps pattern
+with(steps_daily, hist(steps))
+mean_step <- mean(steps_daily$steps)
+median_step <- median(steps_daily$steps)
+```
+Above is the total number of steps taken per day.   
+The mean value is : `r mean_step`.   
+The median value is : `r median_step`    
+
+## What is the average daily activity pattern?
+Make a time series plot (i.e. \color{red}{\verb|type = "l"|}type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+
+Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+```{r tsplot, echo=TRUE}
+#avg_dt <- dt %>% group_by(date) %>% mutate(average=mean(steps))
+
+with(_dt, plot(steps~date,
+              type='l',
+              xlab='5 minutes interval',
+              ylab='average number of steps'))
+
+```
+
+## Imputing missing values
+
+
+
+## Are there differences in activity patterns between weekdays and weekends?
