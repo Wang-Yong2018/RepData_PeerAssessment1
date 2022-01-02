@@ -80,7 +80,7 @@ with(activity_daily,
      )
 ```
 
-![](RepData_project1_files/figure-html/histplot-1.png)<!-- -->
+![](PA1_template_files/figure-html/histplot-1.png)<!-- -->
 
 ```r
 mean_step <- mean(activity_daily$steps)
@@ -108,7 +108,7 @@ with(interval_dt, plot(steps~interval,
               ylab='The average number of steps'))
 ```
 
-![](RepData_project1_files/figure-html/tsplot-1.png)<!-- -->
+![](PA1_template_files/figure-html/tsplot-1.png)<!-- -->
 
 ```r
 max_step_interval <- interval_dt[[which.max(interval_dt$steps),"interval"]]
@@ -198,7 +198,7 @@ with(activity_daily_fillna,
      )
 ```
 
-![](RepData_project1_files/figure-html/fillna_histgram-1.png)<!-- -->
+![](PA1_template_files/figure-html/fillna_histgram-1.png)<!-- -->
 
 ```r
 fillna_mean_step <- mean(activity_daily_fillna$steps)
@@ -219,7 +219,7 @@ hist(activity_daily_fillna$steps,
      col='green')
 ```
 
-![](RepData_project1_files/figure-html/compare_histplots-1.png)<!-- -->
+![](PA1_template_files/figure-html/compare_histplots-1.png)<!-- -->
 Answer: Yes. We can see a big change after filled NA value. It is more like normal distribution.
 
 - What is the impact of imputing missing data on the estimates of the total daily number of steps?
@@ -256,7 +256,7 @@ xyplot(avg_step ~ interval | wday_type,
        )
 ```
 
-![](RepData_project1_files/figure-html/weekda-1.png)<!-- -->
+![](PA1_template_files/figure-html/weekda-1.png)<!-- -->
 
 ```r
 #g <- ggplot(activity_wday_type, aes(interval, steps))
