@@ -14,6 +14,8 @@ library(data.table)
 library(dplyr)
 library(tidyr)
 library(lubridate)
+library(ggplot2)
+library(lattice)
 ```
 
 Show any code that is needed to
@@ -228,22 +230,37 @@ Answer: Yes. We can see a big change after filled NA value. It is more like norm
 
 
 ```r
-activity_daily_fillna %>% mutate(weekdays=weekdays(date))
+activity_wday_type <- copy(dt) %>% 
+  setnafill( "const",fill=mean_step,cols=c("steps")) %>%
+  mutate(wday=wday(date)) %>%
+  mutate(wday_type=factor(case_when(wday %in% c(1,7)~'weekend',
+                                    wday %in% c(2,3,4,5,6)~'weekday')
+                          )    )%>%
+  group_by(interval, wday_type) %>%
+  summarize(avg_step=mean(steps))
 ```
 
 ```
-## # A tibble: 61 x 3
-##    date       steps weekdays 
-##    <date>     <int> <chr>    
-##  1 2012-10-01 10656 Monday   
-##  2 2012-10-02   126 Tuesday  
-##  3 2012-10-03 11352 Wednesday
-##  4 2012-10-04 12116 Thursday 
-##  5 2012-10-05 13294 Friday   
-##  6 2012-10-06 15420 Saturday 
-##  7 2012-10-07 11015 Sunday   
-##  8 2012-10-08 10656 Monday   
-##  9 2012-10-09 12811 Tuesday  
-## 10 2012-10-10  9900 Wednesday
-## # ... with 51 more rows
+## `summarise()` has grouped output by 'interval'. You can override using the `.groups` argument.
 ```
+
+```r
+xyplot(avg_step ~ interval | wday_type, 
+       data = activity_wday_type,
+      
+       layout=c(1,2),
+       panel=function(x=interval,y=avg_step,...){
+         panel.xyplot(x,y,type='l')
+         panel.lmline(x,y,col=2)
+         }
+       )
+```
+
+![](RepData_project1_files/figure-html/weekda-1.png)<!-- -->
+
+```r
+#g <- ggplot(activity_wday_type, aes(interval, steps))
+
+#g+geom_line() + facet_grid(rows=var(wday_type))
+```
+Answer: There is different activity pattern between weekday and weekend. The regressline shows that weekend increase from Moring to dayend. On other hand, the weekday pattern is more stabel in whole days.

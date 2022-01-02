@@ -13,6 +13,8 @@ library(data.table)
 library(dplyr)
 library(tidyr)
 library(lubridate)
+library(ggplot2)
+library(lattice)
 ```
 
 Show any code that is needed to
@@ -145,4 +147,27 @@ Answer: Yes. We can see a big change after filled NA value. It is more like norm
 ## Are there differences in activity patterns between weekdays and weekends?
 
 ```{r weekda, echo=TRUE}
-activity_daily_fillna %>% mutate(weekdays=weekdays(date))
+
+activity_wday_type <- copy(dt) %>% 
+  setnafill( "const",fill=mean_step,cols=c("steps")) %>%
+  mutate(wday=wday(date)) %>%
+  mutate(wday_type=factor(case_when(wday %in% c(1,7)~'weekend',
+                                    wday %in% c(2,3,4,5,6)~'weekday')
+                          )    )%>%
+  group_by(interval, wday_type) %>%
+  summarize(avg_step=mean(steps))
+
+xyplot(avg_step ~ interval | wday_type, 
+       data = activity_wday_type,
+      
+       layout=c(1,2),
+       panel=function(x=interval,y=avg_step,...){
+         panel.xyplot(x,y,type='l')
+         panel.lmline(x,y,col=2)
+         }
+       )
+#g <- ggplot(activity_wday_type, aes(interval, steps))
+
+#g+geom_line() + facet_grid(rows=var(wday_type))
+```
+Answer: There is different activity pattern between weekday and weekend. The regressline shows that weekend increase from Moring to dayend. On other hand, the weekday pattern is more stabel in whole days.
